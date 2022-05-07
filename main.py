@@ -41,14 +41,32 @@ def main():
             result = re.search('&gt;(.*?)&lt;', details[3])
             album = result.group(1)
             print("album", album)
-            # time
+            #time
             result = re.findall('&gt;(.*?)&lt;', details[3])
             time = result[-4]
-            print("time", time)
+            army_time = get_army_time(time)
+            print("army time", army_time)
             print(" ")
-        
+
     print("Finished!")
 
+def get_army_time(time):
+    meridian = time.split(" ")[1]
+    initial = time.split(":")[0]
+    
+    # add 12 if after noon
+    if(initial == 12 and meridian == "AM"):
+        time = 0
+    elif(meridian == "AM"):
+        time = initial
+    elif(initial == "12" and meridian == "PM"):
+        time = 12
+    elif(meridian == "PM" and initial != 12):
+        time = int(initial) + 12
+
+    return time
+        
+    
 def wkshows():
     headers = {
         'authority': 'api.composer.nprstations.org',
@@ -75,7 +93,7 @@ def wkshows():
     response = requests.get('https://kutx.org/program-schedule/', headers=headers, params=params)
     soup = bs4(response.text, 'lxml')
     shows = soup.find("div", id=wkday).find_all("div", class_="kutx-schedule-list-item")
-    
+
     for show in shows:
         name = show.find("div", class_="kutx-schedule-list-host")
         if(name):
