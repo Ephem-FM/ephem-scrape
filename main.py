@@ -53,7 +53,7 @@ def main():
 def get_army_time(time):
     meridian = time.split(" ")[1]
     initial = time.split(":")[0]
-    
+
     # add 12 if after noon
     if(initial == 12 and meridian == "AM"):
         time = 0
@@ -130,4 +130,4 @@ def wkshows():
     return day
 
 if __name__=="__main__":
-    wkshows()
+    main()
