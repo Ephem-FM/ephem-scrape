@@ -9,6 +9,7 @@ cryptography==37.0.2
 DateTime==4.4
 h11==0.13.0
 idna==3.3
+lxml==4.8.0
 outcome==1.1.0
 pycparser==2.21
 pyOpenSSL==22.0.0

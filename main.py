@@ -73,10 +73,9 @@ def wkshows():
     today = calendar.day_name[date.today().weekday()].lower()
     wkday = f"kutx-{today}"
     response = requests.get('https://kutx.org/program-schedule/', headers=headers, params=params)
-    soup = bs4(response.text,'lxml')
+    soup = bs4(response.text, 'lxml')
     shows = soup.find("div", id=wkday).find_all("div", class_="kutx-schedule-list-item")
-    # print(wkday)
-    # print(shows)
+    
     for show in shows:
         name = show.find("div", class_="kutx-schedule-list-host")
         if(name):
