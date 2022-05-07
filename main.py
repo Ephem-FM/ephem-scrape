@@ -20,33 +20,38 @@ def main():
     driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
 
     yesterday = str(date.today()- timedelta(days = 1))
-    print(yesterday)
     url = f"https://api.composer.nprstations.org/v1/widget/50ef24ebe1c8a1369593d032/day?date={yesterday}&format=html&hide_amazon=false&hide_itunes=false&hide_arkiv=false"
-    print(url)
+    day = wkshows()
 
     driver.get(url)
-    tracks = driver.page_source.split('daily-track-data-column')[1:-1]
-    for track in tracks:
-        details = track.split("song-data")
+    total_tracks = driver.page_source.split('daily-track-data-column')[1:-1]
+    for t in total_tracks:
+        song = { 'station': 'kutx989'}
+        details = t.split("song-data")
         if(len(details)==4):
-            # song
-            result = re.search('&gt;(.*?)&lt;', details[1])
-            song = result.group(1)
-            print("song", song)
             # track
-            result = re.search('&gt;(.*?)&lt;', details[2])
+            result = re.search('&gt;(.*?)&lt;', details[1])
             track = result.group(1)
-            print("track", track)
+            # artist
+            result = re.search('&gt;(.*?)&lt;', details[2])
+            artist = result.group(1)
             # album
             result = re.search('&gt;(.*?)&lt;', details[3])
             album = result.group(1)
-            print("album", album)
-            #time
+            # time
             result = re.findall('&gt;(.*?)&lt;', details[3])
             time = result[-4]
-            army_time = get_army_time(time)
-            print("army time", army_time)
-            print(" ")
+            hour = get_army_time(time)
+
+            for show in day:
+                if(int(hour) >= int(show["start"]) and int(hour) < int(show["end"])):
+                    print('in shows')
+                    song["show"] = show["title"]
+                    song["date"] = date.today().strftime('%Y-%m-%d')
+                    song["track"] = track
+                    song["artist"] = artist
+                    song["album"] = album
+                    print(song)
 
     print("Finished!")
 
