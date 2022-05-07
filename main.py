@@ -16,5 +16,26 @@ url = f"https://api.composer.nprstations.org/v1/widget/50ef24ebe1c8a1369593d032/
 print(url)
 
 driver.get(url)
-print(driver.page_source)
+tracks = driver.page_source.split('daily-track-data-column')[1:-1]
+for track in tracks:
+    details = track.split("song-data")
+    if(len(details)==4):
+        # song
+        result = re.search('&gt;(.*?)&lt;', details[1])
+        song = result.group(1)
+        print("song", song)
+        # track
+        result = re.search('&gt;(.*?)&lt;', details[2])
+        track = result.group(1)
+        print("track", track)
+        # album
+        result = re.search('&gt;(.*?)&lt;', details[3])
+        album = result.group(1)
+        print("album", album)
+        # time
+        result = re.findall('&gt;(.*?)&lt;', details[3])
+        time = result[-4]
+        print("time", time)
+        print(" ")
+      
 print("Finished!")
