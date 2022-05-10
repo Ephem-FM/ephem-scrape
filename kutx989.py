@@ -11,6 +11,9 @@ import requests
 from bs4 import BeautifulSoup as bs4
 import lxml
 
+    # for writing to db
+import write
+
 def main(): 
     days_shows = get_days_shows()
     total_tracks = get_days_songs()
@@ -40,7 +43,8 @@ def main():
                     song["track"] = track
                     song["artist"] = artist
                     song["album"] = album
-                    print(song)
+                    write.pg(song)
+                    # print(song)
 
     print("Finished!")
 
