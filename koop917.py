@@ -2,33 +2,27 @@
 import re
 from datetime import date
 from dateparser import parse
-
 	# getting daily show schedule
 import requests
 import bs4
 import lxml
-
 	# getting playlist
 from selenium import webdriver
 import os
 import time
-
 	# writing to db
 import write
 
-
 def main():
-	song = { 'station': 'koop917'}
+	song = { 'station': 'koop917' }
 	schedule = get_schedule()
 	for day in schedule:
-		# Retrieving date for today or past week
 		if(parse(day).strftime('%m %d %Y') == parse("Today").strftime('%m %d %Y')):
 			song['date'] = parse(day).strftime('%Y-%m-%d') or ''
 		else:
 			song['date'] = parse(day, settings={'PREFER_DATES_FROM': 'past'}).strftime('%Y-%m-%d') or ''
-		# Retrieving playlist for each show 
+		    
 		for k, v in schedule[day].items():
-			# song['time'] = k or ''
 			song['show'] = v or ''
 			songs_played = None;
 			try:
@@ -36,7 +30,6 @@ def main():
 				for artist, track in songs_played.items():
 					song['artist'] = artist or ''
 					song['track'] = track or ''
-					# print(song)
 					write.pg(song)
 			except Exception as e:
 				print('This error comes from koop917.py', e)
@@ -67,10 +60,7 @@ def get_schedule():
 				time = show.select('.time')[0].getText()
 				name = show.select('.show-name')[0].getText()
 				schedule[days[day-1]][time] = name
-				print(f'On {days[day-1]} at {time} is {name}')
 
-	for day in schedule:
-		print(f'{day}: {schedule[day]}\n')
 	return schedule
 
 def clean_url(show_name):
@@ -95,12 +85,12 @@ def get_playlist(show_cleaned):
             return
         songs = playlist_raw.text.split('\n')
         playlist = {}
+        
         for song in songs:
             song_split = song.split('-')
             artist = song_split[0].strip()
             track = song_split[1].split('(')[0].strip()
             playlist[artist] = track
-        
         return(playlist)
     except Exception as e:
         print(f'The program {show_cleaned} does not have a playlist and is therefore likely not a musical show')
@@ -108,4 +98,4 @@ def get_playlist(show_cleaned):
         driver.quit()
 
 if __name__ == "__main__":
-	get_schedule()
+	main()
