@@ -45,7 +45,6 @@ def main():
 
             for show in day:
                 if(int(hour) >= int(show["start"]) and int(hour) < int(show["end"])):
-                    print('in shows')
                     song["show"] = show["title"]
                     song["date"] = date.today().strftime('%Y-%m-%d')
                     song["track"] = track
@@ -70,9 +69,8 @@ def get_army_time(time):
         time = int(initial) + 12
 
     return time
-        
-    
-def wkshows():
+         
+def get_days_shows():
     headers = {
         'authority': 'api.composer.nprstations.org',
         'sec-ch-ua': '" Not;A Brand";v="99", "Google Chrome";v="97", "Chromium";v="97"',
