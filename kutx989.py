@@ -1,9 +1,11 @@
     # for day's playlist
 from selenium import webdriver
-from datetime import date
-from datetime import timedelta
+import datetime
+from datetime import date # might be able to delete this line
+from datetime import timedelta # might be able to delete this line
 import os
 import re
+from zoneinfo import ZoneInfo
 
     # for day's schedule
 import calendar
@@ -132,7 +134,7 @@ def get_days_songs():
     chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
     driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
 
-    today = str(date.today())
+    today = str(datetime.datetime.now(ZoneInfo("America/Chicago")).date())
     print(today)
     url = f"https://api.composer.nprstations.org/v1/widget/50ef24ebe1c8a1369593d032/day?date={today}&format=html&hide_amazon=false&hide_itunes=false&hide_arkiv=false"
     print(url)
@@ -141,4 +143,5 @@ def get_days_songs():
     return total_tracks
 
 if __name__=="__main__":
-    main()
+    today = str(datetime.datetime.now(ZoneInfo("America/Chicago")).date())
+    print(today)
