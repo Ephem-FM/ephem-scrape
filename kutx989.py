@@ -88,7 +88,7 @@ def get_days_shows():
     )
     response = requests.get('https://kutx.org/program-schedule/', headers=headers, params=params)
     soup = bs4(response.text, 'lxml')
-    today = calendar.day_name[date.today().weekday()].lower()
+    today = calendar.day_name[datetime.datetime.now(ZoneInfo("America/Chicago")).date().weekday()].lower()
     wkday = f"kutx-{today}"
     shows = soup.find("div", id=wkday).find_all("div", class_="kutx-schedule-list-item")
 
@@ -143,5 +143,4 @@ def get_days_songs():
     return total_tracks
 
 if __name__=="__main__":
-    today = str(datetime.datetime.now(ZoneInfo("America/Chicago")).date())
-    print(today)
+    main()
