@@ -6,6 +6,7 @@ from datetime import timedelta # might be able to delete this line
 import os
 import re
 from zoneinfo import ZoneInfo
+from webdriver_manager.chrome import ChromeDriverManager
 
     # for day's schedule
 import calendar
@@ -15,6 +16,11 @@ import lxml
 
     # for writing to db
 import write
+
+    # for spotify api
+import spotipy
+from spotipy.oauth2 import SpotifyClientCredentials
+import pprint
 
 def main(): 
     days_shows = get_days_shows()
@@ -45,8 +51,9 @@ def main():
                     song["track"] = track
                     song["artist"] = artist
                     song["album"] = album
-                    write.pg(song)
-                    # print(song)
+                    get_spotify_data(song)
+                    # write.pg(song)
+                    print(song)
 
     print("Finished!")
 
@@ -132,7 +139,8 @@ def get_days_songs():
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
-    driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
+    # driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
+    driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=chrome_options)
 
     today = str(datetime.datetime.now(ZoneInfo("America/Chicago")).date())
     print(today)
@@ -142,5 +150,32 @@ def get_days_songs():
     total_tracks = driver.page_source.split('daily-track-data-column')[1:-1]
     return total_tracks
 
+def get_spotify_data(song):
+    client_credentials_manager = SpotifyClientCredentials(client_id='56cb54535a2840378768c32fb6539781', client_secret='cbaa3d2d0cb243fab9c5f8601bf89f20')
+    sp = spotipy.Spotify(client_credentials_manager = client_credentials_manager)
+    artist = song['artist']
+    track = song['track']
+    print("artist", artist)
+    print("track", track)
+
+    # pp = pprint.PrettyPrinter(indent=4)
+    # pp.pprint(artist_search['artists']['items'][0])
+    
+    try:
+        artist_search = sp.search(q='artist:' + artist, type='artist')['artists']['items'][0]
+        track_id = sp.search(q='artist:' + artist + ' track:' + track, type='track')['tracks']['items'][0]['id']
+        audio_features = sp.audio_features(track_id)[0]
+        song['artist_popularity'] = artist_search['popularity']
+        song['artist_genres'] = artist_search['genres'][:3]
+        song['danceability'] = audio_features['danceability']
+        song['energy'] = audio_features['energy']
+        song['instrumentalness'] = audio_features['instrumentalness']
+        song['valence'] = audio_features['valence']
+
+
+    except IndexError as e:
+        print(f"IndexError: {e}")
+
 if __name__=="__main__":
     main()
+    # get_spotify_data()
