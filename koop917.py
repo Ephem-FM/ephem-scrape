@@ -8,6 +8,7 @@ import bs4
 import lxml
 	# getting playlist
 from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
 import os
 import time
 	# spotify
@@ -29,19 +30,28 @@ def main():
 			song['show'] = v or ''
 			songs_played = None;
 			try:
+				print("wassup")
 				songs_played = get_playlist(clean_url(v))
 				for artist, track in songs_played.items():
 					song['artist'] = artist or ''
 					song['track'] = track or ''
-					artist_info = spot.artist_info(artist)
-					song["artist_popularity"] = artist_info["artist_popularity"]
-					song["artist_genres"] = artist_info["artist_genres"]
-					track_info = spot.track_info(track, artist)
-					song["danceability"] = track_info["danceability"]
-					song["energy"] = track_info["energy"]
-					song["instrumentalness"] = track_info["instrumentalness"]
-					song["valence"] = track_info["valence"]
+					try:
+						artist_info = spot.artist_info(artist)
+						song["artist_popularity"] = artist_info["artist_popularity"]
+						song["artist_genres"] = artist_info["artist_genres"]
+					except TypeError as e:
+						print(f"Couldn't find artist {artist}, TypeError: {e}")
+					
+					try:
+						track_info = spot.track_info(track, artist)
+						song["danceability"] = track_info["danceability"]
+						song["energy"] = track_info["energy"]
+						song["instrumentalness"] = track_info["instrumentalness"]
+						song["valence"] = track_info["valence"]
+					except TypeError as e:
+						print(f"Couldn't find artist {artist}, TypeError: {e}")
 					write.pg(song)
+					print(song)
 			except Exception as e:
 				print('This error comes from koop917.py', e)
 			finally:
@@ -85,7 +95,8 @@ def get_playlist(show_cleaned):
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
-    driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
+    # driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
+    driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=chrome_options)
     url = 'https://koop.org/programs/' + show_cleaned
     driver.get(url)
     
@@ -110,3 +121,4 @@ def get_playlist(show_cleaned):
 
 if __name__ == "__main__":
 	main()
+	# get_schedule()

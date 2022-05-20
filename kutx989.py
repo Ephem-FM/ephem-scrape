@@ -52,15 +52,23 @@ def main():
                     song["track"] = track
                     song["artist"] = artist
                     song["album"] = album
-                    artist_info = spot.artist_info(artist)
-                    song["artist_popularity"] = artist_info["artist_popularity"]
-                    song["artist_genres"] = artist_info["artist_genres"]
-                    track_info = spot.track_info(track, artist)
-                    song["danceability"] = track_info["danceability"]
-                    song["energy"] = track_info["energy"]
-                    song["instrumentalness"] = track_info["instrumentalness"]
-                    song["valence"] = track_info["valence"]
-                    # write.pg(song)
+                    try:
+                        artist_info = spot.artist_info(artist)
+                        song["artist_popularity"] = artist_info["artist_popularity"]
+                        song["artist_genres"] = artist_info["artist_genres"]
+                    except TypeError as e:
+                        print(f"Couldn't find artist {artist}, TypeError: {e}")
+                    
+
+                    try:
+                        track_info = spot.track_info(track, artist)
+                        song["danceability"] = track_info["danceability"]
+                        song["energy"] = track_info["energy"]
+                        song["instrumentalness"] = track_info["instrumentalness"]
+                        song["valence"] = track_info["valence"]
+                    except TypeError as e:
+                        print(f"Couldn't find artist {artist}, TypeError: {e}")
+                    write.pg(song)
                     print(song)
 
     print("Finished!")

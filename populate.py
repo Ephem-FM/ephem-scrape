@@ -10,12 +10,11 @@ def main():
     cur.execute("""SELECT * FROM playlists;""")
     rows = cur.fetchall()
     count=0
-    for row in rows:
+    for row in rows[:200]:
         count = count + 1
         print("count", count)
         time.sleep(1)
         id = row[0]
-        print(id)
         artist = row[4]
         track = row[5]
         client_credentials_manager = SpotifyClientCredentials(client_id='56cb54535a2840378768c32fb6539781', client_secret='cbaa3d2d0cb243fab9c5f8601bf89f20')
@@ -26,7 +25,9 @@ def main():
             update_query = """ UPDATE playlists SET artist_popularity=%s, artist_genres=%s WHERE playlist_song_id=%s; """
             update_tuple = (round(artist_search['popularity'], 3), artist_search['genres'][:3], id)
             cur.execute(update_query, update_tuple)
+            print("artist success!")
         except IndexError as e:
+            # print("artist failure")
             print(f"Couldn't find artist {artist}, IndexError: {e}")
 
             # track info (danceability, energy, instrumentalness, valence)
@@ -36,7 +37,9 @@ def main():
             update_query = """ UPDATE playlists SET danceability=%s, energy=%s, instrumentalness=%s, valence=%s WHERE playlist_song_id=%s; """
             update_tuple = (round(audio_features['danceability'], 3), round(audio_features['energy'], 3), round(audio_features['instrumentalness'], 3), round(audio_features['valence'], 3), id)
             cur.execute(update_query, update_tuple)
+            print("track success!")
         except IndexError as e:
+            # print("track failure")
             print(f"Couldn't find track {track}, IndexError: {e}")    
             
     con.commit()
