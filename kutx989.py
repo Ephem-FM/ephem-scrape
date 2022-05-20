@@ -21,6 +21,7 @@ import write
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 import pprint
+import spot
 
 def main(): 
     days_shows = get_days_shows()
@@ -51,7 +52,14 @@ def main():
                     song["track"] = track
                     song["artist"] = artist
                     song["album"] = album
-                    get_spotify_data(song)
+                    artist_info = spot.artist_info(artist)
+                    song["artist_popularity"] = artist_info["artist_popularity"]
+                    song["artist_genres"] = artist_info["artist_genres"]
+                    track_info = spot.track_info(track, artist)
+                    song["danceability"] = track_info["danceability"]
+                    song["energy"] = track_info["energy"]
+                    song["instrumentalness"] = track_info["instrumentalness"]
+                    song["valence"] = track_info["valence"]
                     # write.pg(song)
                     print(song)
 

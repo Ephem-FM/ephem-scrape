@@ -10,8 +10,11 @@ import lxml
 from selenium import webdriver
 import os
 import time
+	# spotify
+import spot
 	# writing to db
 import write
+
 
 def main():
 	song = { 'station': 'koop917' }
@@ -30,6 +33,14 @@ def main():
 				for artist, track in songs_played.items():
 					song['artist'] = artist or ''
 					song['track'] = track or ''
+					artist_info = spot.artist_info(artist)
+					song["artist_popularity"] = artist_info["artist_popularity"]
+					song["artist_genres"] = artist_info["artist_genres"]
+					track_info = spot.track_info(track, artist)
+					song["danceability"] = track_info["danceability"]
+					song["energy"] = track_info["energy"]
+					song["instrumentalness"] = track_info["instrumentalness"]
+					song["valence"] = track_info["valence"]
 					write.pg(song)
 			except Exception as e:
 				print('This error comes from koop917.py', e)
