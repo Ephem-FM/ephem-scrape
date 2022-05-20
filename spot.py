@@ -1,7 +1,9 @@
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
+import time
 
 def artist_info(artist):
+    time.sleep(0.5)
     client_credentials_manager = SpotifyClientCredentials(client_id='56cb54535a2840378768c32fb6539781', client_secret='cbaa3d2d0cb243fab9c5f8601bf89f20')
     sp = spotipy.Spotify(client_credentials_manager = client_credentials_manager)
         # artist info (genres, popularity)
@@ -15,6 +17,7 @@ def artist_info(artist):
         print(f"Couldn't find artist {artist}, IndexError: {e}")
 
 def track_info(track, artist):
+    time.sleep(0.5)
     client_credentials_manager = SpotifyClientCredentials(client_id='56cb54535a2840378768c32fb6539781', client_secret='cbaa3d2d0cb243fab9c5f8601bf89f20')
     sp = spotipy.Spotify(client_credentials_manager = client_credentials_manager)
         # track info (danceability, energy, instrumentalness, valence)

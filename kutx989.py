@@ -68,7 +68,7 @@ def main():
                         song["valence"] = track_info["valence"]
                     except TypeError as e:
                         print(f"Couldn't find artist {artist}, TypeError: {e}")
-                    write.pg(song)
+                    # write.pg(song)
                     print(song)
 
     print("Finished!")
