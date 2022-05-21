@@ -10,7 +10,7 @@ def artist_info(artist):
     try:
         artist_search = sp.search(q='artist:' + artist, type='artist')['artists']['items'][0]
         return {
-            'artist_popularity': artist_search['popularity'], 
+            'artist_popularity': round(artist_search['popularity'], 3), 
             'artist_genres': artist_search['genres'][:3]
         }
     except IndexError as e:
@@ -25,10 +25,10 @@ def track_info(track, artist):
         track_id = sp.search(q='artist:' + artist + ' track:' + track, type='track')['tracks']['items'][0]['id']
         audio_features = sp.audio_features(track_id)[0]
         return {
-            'danceability': audio_features['danceability'],
-            'energy': audio_features['energy'],
-            'instrumentalness': audio_features['instrumentalness'],
-            'valence': audio_features['valence']
+            'danceability': round(audio_features['danceability'], 3),
+            'energy': round(audio_features['energy'], 3),
+            'instrumentalness': round(audio_features['instrumentalness'], 3),
+            'valence': round(audio_features['valence'], 3)
         }
         
     except IndexError as e:

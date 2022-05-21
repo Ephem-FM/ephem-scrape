@@ -30,9 +30,10 @@ def main():
 			song['show'] = v or ''
 			songs_played = None;
 			try:
-				print("wassup")
 				songs_played = get_playlist(clean_url(v))
 				for artist, track in songs_played.items():
+						# reset spotify categories to blank strings
+					song['artist_popularity'] = song['artist_genres'] = song['danceability'] = song['energy'] = song['instrumentalness'] = song['valence'] = ''
 					song['artist'] = artist or ''
 					song['track'] = track or ''
 					try:
@@ -95,8 +96,8 @@ def get_playlist(show_cleaned):
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
-    driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
-    # driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=chrome_options)
+    # driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
+    driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=chrome_options)
     url = 'https://koop.org/programs/' + show_cleaned
     driver.get(url)
     
