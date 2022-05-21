@@ -9,8 +9,8 @@ def main():
     cur = con.cursor()
     cur.execute("""SELECT * FROM playlists;""")
     rows = cur.fetchall()
-    count=400
-    for row in rows[400:600]:
+    print(len(rows))
+    for row in rows[4800:5000]:
         count = count + 1
         print("count", count)
         time.sleep(1)
