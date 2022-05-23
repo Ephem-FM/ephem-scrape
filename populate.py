@@ -9,7 +9,7 @@ import calendar
 def main():
     daily('kutx989', 1)
     if(calendar.day_name[datetime.now(ZoneInfo("America/Chicago")).date().weekday()].lower()) == 'thursday':
-        daily('koop917', 7)
+        weekly('koop917')
 
 
 def daily(station, days):
@@ -64,8 +64,8 @@ def daily(station, days):
     con.commit()
     cur.close()
 
-def weekly():
-    pass
+def weekly(station):
+    daily(station, 7)
 
 if __name__=="__main__":
     main()
