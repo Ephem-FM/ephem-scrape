@@ -2,15 +2,21 @@ import psycopg2
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 import time
+from zoneinfo import ZoneInfo
+from datetime import datetime,timedelta
 
 def main():
     con = psycopg2.connect('postgres://hnewxezrserycc:fa7730d9660660f7dc0292e1282e327c0a93ff49d062cf25f270d30bc27747e3@ec2-3-209-61-239.compute-1.amazonaws.com:5432/d26q7d7nbt04qe')
     con.autocommit = True
     cur = con.cursor()
-    cur.execute("""SELECT * FROM playlists;""")
+        # get yesterday's songs
+    select_query = """SELECT * FROM playlists WHERE date=%s;"""
+    select_tuple = (str(datetime.now(ZoneInfo("America/Chicago")).date() - timedelta(1)),)
+    cur.execute(select_query, select_tuple)
     rows = cur.fetchall()
     print(len(rows))
-    for row in rows[4800:5000]:
+    count=0
+    for row in rows:
         count = count + 1
         print("count", count)
         time.sleep(1)

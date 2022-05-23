@@ -36,21 +36,6 @@ def main():
 					song['artist_popularity'] = song['artist_genres'] = song['danceability'] = song['energy'] = song['instrumentalness'] = song['valence'] = ''
 					song['artist'] = artist or ''
 					song['track'] = track or ''
-					try:
-						artist_info = spot.artist_info(artist)
-						song["artist_popularity"] = artist_info["artist_popularity"]
-						song["artist_genres"] = artist_info["artist_genres"]
-					except TypeError as e:
-						print(f"Couldn't find artist {artist}, TypeError: {e}")
-					
-					try:
-						track_info = spot.track_info(track, artist)
-						song["danceability"] = track_info["danceability"]
-						song["energy"] = track_info["energy"]
-						song["instrumentalness"] = track_info["instrumentalness"]
-						song["valence"] = track_info["valence"]
-					except TypeError as e:
-						print(f"Couldn't find artist {artist}, TypeError: {e}")
 					write.pg(song)
 					print(song)
 			except Exception as e:
@@ -123,3 +108,19 @@ def get_playlist(show_cleaned):
 if __name__ == "__main__":
 	main()
 	# get_schedule()
+
+	# try:
+	# 	artist_info = spot.artist_info(artist)
+	# 	song["artist_popularity"] = artist_info["artist_popularity"]
+	# 	song["artist_genres"] = artist_info["artist_genres"]
+	# except TypeError as e:
+	# 	print(f"Couldn't find artist {artist}, TypeError: {e}")
+	
+	# try:
+	# 	track_info = spot.track_info(track, artist)
+	# 	song["danceability"] = track_info["danceability"]
+	# 	song["energy"] = track_info["energy"]
+	# 	song["instrumentalness"] = track_info["instrumentalness"]
+	# 	song["valence"] = track_info["valence"]
+	# except TypeError as e:
+	# 	print(f"Couldn't find artist {artist}, TypeError: {e}")
