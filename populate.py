@@ -11,7 +11,6 @@ def main():
     if(calendar.day_name[datetime.now(ZoneInfo("America/Chicago")).date().weekday()].lower()) == 'thursday':
         weekly('koop917')
 
-
 def daily(station, days):
     con = psycopg2.connect('postgres://hnewxezrserycc:fa7730d9660660f7dc0292e1282e327c0a93ff49d062cf25f270d30bc27747e3@ec2-3-209-61-239.compute-1.amazonaws.com:5432/d26q7d7nbt04qe')
     con.autocommit = True
@@ -58,9 +57,7 @@ def daily(station, days):
             except IndexError as e:
                 # print("track failure")
                 print(f"Couldn't find track {track}, IndexError: {e}")    
-            
-            
-            
+               
     con.commit()
     cur.close()
 
