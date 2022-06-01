@@ -10,7 +10,7 @@ def main():
     print(today)
     if today == "wednesday":
         print("today's wednesday!")
-        # koop917.main()
+        koop917.main()
         print("task complete")
 
 if __name__=="__main__":
