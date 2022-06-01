@@ -1,13 +1,17 @@
 import kutx989
 import koop917
 import calendar
-from datetime import date
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 def main():
-    kutx989.main()
-    today = calendar.day_name[date.today().weekday()]
-    if today == "Wednesday":
-        koop917.main()
+    # kutx989.main()
+    today = today = calendar.day_name[datetime.now(ZoneInfo("America/Chicago")).date().weekday()].lower()
+    print(today)
+    if today == "wednesday":
+        print("today's wednesday!")
+        # koop917.main()
+        print("task complete")
 
 if __name__=="__main__":
     main()
