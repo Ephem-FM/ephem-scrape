@@ -21,12 +21,19 @@ def main():
 	song = { 'station': 'koop917' }
 	schedule = get_schedule()
 	for day in schedule:
-		if(parse(day).strftime('%m %d %Y') == parse("Today").strftime('%m %d %Y')):
+		# MAY WANT TO EDIT HOW DATE IS CONSIDERED 
+		if(parse(day).strftime('%m %d %Y') == parse("Today").strftime('%m %d %Y')): 
 			song['date'] = parse(day).strftime('%Y-%m-%d') or ''
+			print(1)
+			print(song['date'])
 		else:
 			song['date'] = parse(day, settings={'PREFER_DATES_FROM': 'past'}).strftime('%Y-%m-%d') or ''
-		    
+			print(2)
+			print(song['date'])
+
 		for k, v in schedule[day].items():
+			print("k", k)
+			print("v", v)
 			song['show'] = v or ''
 			songs_played = None;
 			try:
@@ -38,6 +45,7 @@ def main():
 					song['track'] = track or ''
 					write.pg(song)
 					print(song)
+					time.sleep(1)
 			except Exception as e:
 				print('This error comes from koop917.py', e)
 			finally:
@@ -106,8 +114,7 @@ def get_playlist(show_cleaned):
         driver.quit()
 
 if __name__ == "__main__":
-	main()
-	# get_schedule()
+	main()	
 
 	# try:
 	# 	artist_info = spot.artist_info(artist)
