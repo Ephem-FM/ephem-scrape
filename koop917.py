@@ -1,7 +1,8 @@
 	# main imports
 import re
-from datetime import date
+import datetime
 from dateparser import parse
+from zoneinfo import ZoneInfo
 	# getting daily show schedule
 import requests
 import bs4
@@ -20,37 +21,33 @@ import write
 def main():
 	song = { 'station': 'koop917' }
 	schedule = get_schedule()
+	yesterday = str(datetime.datetime.now(ZoneInfo("America/Chicago")).date() - datetime.timedelta(1))
+
 	for day in schedule:
-		# MAY WANT TO EDIT HOW DATE IS CONSIDERED 
-		if(parse(day).strftime('%m %d %Y') == parse("Today").strftime('%m %d %Y')): 
+		print(parse(day).strftime('%m %d %Y'))
+		if(parse(day).strftime('%m %d %Y') == parse(yesterday).strftime('%m %d %Y')): 
 			song['date'] = parse(day).strftime('%Y-%m-%d') or ''
-			print(1)
-			print(song['date'])
+			for k, v in schedule[day].items():
+				song['show'] = v or ''
+				songs_played = None
+				try:
+					songs_played = get_playlist(clean_url(v))
+					for artist, track in songs_played.items():
+							# reset spotify categories to blank strings
+						song['artist_popularity'] = song['artist_genres'] = song['danceability'] = song['energy'] = song['instrumentalness'] = song['valence'] = ''
+						song['artist'] = artist or ''
+						song['track'] = track or ''
+						write.pg(song)
+						print(song)
+				except Exception as e:
+					print('This error comes from koop917.py', e)
+				finally:
+					if(songs_played == None):
+						print("It's reached none")
 		else:
 			song['date'] = parse(day, settings={'PREFER_DATES_FROM': 'past'}).strftime('%Y-%m-%d') or ''
-			print(2)
-			print(song['date'])
 
-		for k, v in schedule[day].items():
-			print("k", k)
-			print("v", v)
-			song['show'] = v or ''
-			songs_played = None;
-			try:
-				songs_played = get_playlist(clean_url(v))
-				for artist, track in songs_played.items():
-						# reset spotify categories to blank strings
-					song['artist_popularity'] = song['artist_genres'] = song['danceability'] = song['energy'] = song['instrumentalness'] = song['valence'] = ''
-					song['artist'] = artist or ''
-					song['track'] = track or ''
-					write.pg(song)
-					print(song)
-					time.sleep(1)
-			except Exception as e:
-				print('This error comes from koop917.py', e)
-			finally:
-				if(songs_played == None):
-					print("It's reached none")
+
 
 def get_schedule():
 	result = requests.get('https://koop.org/shows/', headers={'User-Agent': 'Mozilla/5.0'})
@@ -115,7 +112,6 @@ def get_playlist(show_cleaned):
 
 if __name__ == "__main__":
 	main()	
-
 	# try:
 	# 	artist_info = spot.artist_info(artist)
 	# 	song["artist_popularity"] = artist_info["artist_popularity"]
