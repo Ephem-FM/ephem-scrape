@@ -48,7 +48,6 @@ def main():
 			song['date'] = parse(day, settings={'PREFER_DATES_FROM': 'past'}).strftime('%Y-%m-%d') or ''
 
 
-
 def get_schedule():
 	result = requests.get('https://koop.org/shows/', headers={'User-Agent': 'Mozilla/5.0'})
 	soup = bs4.BeautifulSoup(result.text,'lxml')
@@ -111,7 +110,8 @@ def get_playlist(show_cleaned):
         driver.quit()
 
 if __name__ == "__main__":
-	main()	
+	print("Hi Friend!")
+	# main()	
 	# try:
 	# 	artist_info = spot.artist_info(artist)
 	# 	song["artist_popularity"] = artist_info["artist_popularity"]
