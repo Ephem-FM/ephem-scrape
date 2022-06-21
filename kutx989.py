@@ -53,7 +53,7 @@ def main():
                     song["track"] = track
                     song["artist"] = artist
                     song["album"] = album
-                    write.pg(song)
+                    write.add_song(song)
                     print(song)
 
     print("Finished!")

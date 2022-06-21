@@ -25,6 +25,7 @@ def main():
 
 	for day in schedule:
 		print(parse(day).strftime('%m %d %Y'))
+			# only select yesterday's songs
 		if(parse(day).strftime('%m %d %Y') == parse(yesterday).strftime('%m %d %Y')): 
 			song['date'] = parse(day).strftime('%Y-%m-%d') or ''
 			for k, v in schedule[day].items():
@@ -37,7 +38,8 @@ def main():
 						song['artist_popularity'] = song['artist_genres'] = song['danceability'] = song['energy'] = song['instrumentalness'] = song['valence'] = ''
 						song['artist'] = artist or ''
 						song['track'] = track or ''
-						write.pg(song)
+						# write.add_song(song)
+						write.connect(write.write_song, use='song', song=song)
 						print(song)
 				except Exception as e:
 					print('This error comes from koop917.py', e)
@@ -110,20 +112,4 @@ def get_playlist(show_cleaned):
         driver.quit()
 
 if __name__ == "__main__":
-	print("Hi Friend!")
-	# main()	
-	# try:
-	# 	artist_info = spot.artist_info(artist)
-	# 	song["artist_popularity"] = artist_info["artist_popularity"]
-	# 	song["artist_genres"] = artist_info["artist_genres"]
-	# except TypeError as e:
-	# 	print(f"Couldn't find artist {artist}, TypeError: {e}")
-	
-	# try:
-	# 	track_info = spot.track_info(track, artist)
-	# 	song["danceability"] = track_info["danceability"]
-	# 	song["energy"] = track_info["energy"]
-	# 	song["instrumentalness"] = track_info["instrumentalness"]
-	# 	song["valence"] = track_info["valence"]
-	# except TypeError as e:
-	# 	print(f"Couldn't find artist {artist}, TypeError: {e}")
+	main()
