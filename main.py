@@ -5,7 +5,7 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 
 def main():
-    # kutx989.main()
+    kutx989.main()
     koop917.main()
     # today = today = calendar.day_name[datetime.now(ZoneInfo("America/Chicago")).date().weekday()].lower()
     # print(today)
