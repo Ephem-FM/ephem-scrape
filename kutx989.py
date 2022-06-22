@@ -74,7 +74,8 @@ def get_army_time(time):
 
     return time
          
-def get_days_shows():
+def get_days_shows(today = 'wednesday'):
+    print(today)
     day = []
     headers = {
         'authority': 'api.composer.nprstations.org',
@@ -96,8 +97,9 @@ def get_days_shows():
     )
     response = requests.get('https://kutx.org/program-schedule/', headers=headers, params=params)
     soup = bs4(response.text, 'lxml')
-    today = calendar.day_name[datetime.datetime.now(ZoneInfo("America/Chicago")).date().weekday()].lower()
+    # today = calendar.day_name[datetime.datetime.now(ZoneInfo("America/Chicago")).date().weekday()].lower()
     wkday = f"kutx-{today}"
+    # wkday = f"kutx-monday"
     shows = soup.find("div", id=wkday).find_all("div", class_="kutx-schedule-list-item")
 
     for show in shows:
@@ -105,26 +107,9 @@ def get_days_shows():
         if(name):
             host = name.text
             title = show.find("div", class_="kutx-schedule-list-title").text
-            begin = show.find("div", class_="kutx-schedule-list-time").text.split("-")[0].split(" ")
-            if(begin[0] == 12 and begin[1] == "am"):
-                start = 0
-            elif(begin[1] == "am"):
-                start = begin[0]
-            elif(begin[0] == "12" and begin[1] == "pm"):
-                start = 12
-            elif(begin[1] == "pm" and begin[0] != 12):
-                start = int(begin[0]) + 12
-            
-            fin = show.find("div", class_="kutx-schedule-list-time").text.split("-")[1].split(" ")
-            if(fin[0] == 12 and fin[1] == "am"):
-                end = 0
-            elif(fin[1] == "am"):
-                end = fin[0]
-            elif(fin[0] == "12" and fin[1] == "pm"):
-                end = 12
-            elif(fin[1] == "pm" and fin[0] != 12):
-                end = int(fin[0]) + 12
-            
+            start = adjust_time(show.find("div", class_="kutx-schedule-list-time").text.split("-")[0].split(" "), "start")
+            end = adjust_time(show.find("div", class_="kutx-schedule-list-time").text.split("-")[1].split(" "), "end")
+
             day.append({
                 'start': start,
                 'end': end,
@@ -133,6 +118,28 @@ def get_days_shows():
             })
 
     return day
+
+def adjust_time(time_initial, start_or_end):
+        # if 12 am, 0
+    if(time_initial[0] == '12' and time_initial[1] == "am"):
+        if(start_or_end=='start'):
+            return 0
+        elif(start_or_end=='end'):
+            return 24
+        # if pm and not noon, +12
+    if(time_initial[1] == "pm" and time_initial[0] != '12'):
+        return int(time_initial[0]) + 12
+
+    return time_initial[0]
+
+def get_schedule():
+    wkdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+    schedule = {}
+
+    for day in wkdays:
+        schedule[day] = get_days_shows(day)
+    
+    return schedule
 
 def get_days_songs():
     chrome_options = webdriver.ChromeOptions()
@@ -179,4 +186,4 @@ def get_spotify_data(song):
 
 if __name__=="__main__":
     # main()
-    get_days_shows()
+    write_schedule()
