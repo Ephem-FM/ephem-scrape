@@ -13,8 +13,11 @@ def connect(func, **kwargs):
 		print(kwargs)
 		if(kwargs['use'] == 'schedule'):
 			func(kwargs['station'], kwargs['schedule'], cur)
+			conn.commit()
 		elif(kwargs['use'] == 'song'):
 			func(kwargs['song'], cur)
+			conn.commit()
+			time_import.sleep(2)
 		cur.close()
 
 	return wrapper
