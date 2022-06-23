@@ -53,7 +53,6 @@ def main():
                     song["track"] = track
                     song["artist"] = artist
                     song["album"] = album
-                    write.write_song(song)
                     write.connect(write.write_song, use='song')()
                     print(song)
 
