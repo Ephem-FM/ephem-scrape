@@ -9,9 +9,11 @@ def connect(func, **kwargs):
 		conn = psycopg2.connect(os.environ.get('HEROKU_POSTGRESQL_ORANGE_URL'))
 		conn.autocommit = True
 		cur = conn.cursor()
-		if[kwargs['use'] == 'schedule']:
+		print("in wrapper")
+		print(kwargs)
+		if(kwargs['use'] == 'schedule'):
 			func(kwargs['station'], kwargs['schedule'], cur)
-		elif[kwargs['use'] == 'song']:
+		elif(kwargs['use'] == 'song'):
 			func(kwargs['song'], cur)
 		cur.close()
 
