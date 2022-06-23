@@ -13,24 +13,18 @@ def connect(func, **kwargs):
 		print(kwargs)
 		if(kwargs['use'] == 'schedule'):
 			func(kwargs['station'], kwargs['schedule'], cur)
-			conn.commit()
 		elif(kwargs['use'] == 'song'):
 			func(kwargs['song'], cur)
-			conn.commit()
-			time_import.sleep(2)
+			
+		conn.commit()
 		cur.close()
 
 	return wrapper
 
-def write_song(song):
-	conn = psycopg2.connect(os.environ.get('HEROKU_POSTGRESQL_ORANGE_URL'))
-	conn.autocommit = True
-	cur = conn.cursor()
+def write_song(song, cur):
 	insert_query = """ INSERT INTO playlists (playlist_song_id, station, show, date, artist, track) VALUES (%s, %s, %s, %s, %s, %s); """
 	insert_tuple = (uuid.uuid4().hex), str(song["station"]), str(song["show"]), song["date"], str(song["artist"]), str(song["track"])
 	print(cur.execute(insert_query, insert_tuple))
-	conn.commit()
-	cur.close()
 
 def write_schedule(station, schedule, cur):
 	def adjust_time(time):
