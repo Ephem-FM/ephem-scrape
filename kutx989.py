@@ -74,8 +74,7 @@ def get_army_time(time):
 
     return time
          
-def get_days_shows(today = 'wednesday'):
-    print(today)
+def get_days_shows():
     day = []
     headers = {
         'authority': 'api.composer.nprstations.org',
@@ -97,9 +96,8 @@ def get_days_shows(today = 'wednesday'):
     )
     response = requests.get('https://kutx.org/program-schedule/', headers=headers, params=params)
     soup = bs4(response.text, 'lxml')
-    # today = calendar.day_name[datetime.datetime.now(ZoneInfo("America/Chicago")).date().weekday()].lower()
+    today = calendar.day_name[datetime.datetime.now(ZoneInfo("America/Chicago")).date().weekday()].lower()
     wkday = f"kutx-{today}"
-    # wkday = f"kutx-monday"
     shows = soup.find("div", id=wkday).find_all("div", class_="kutx-schedule-list-item")
 
     for show in shows:
@@ -186,4 +184,3 @@ def get_spotify_data(song):
 
 if __name__=="__main__":
     # main()
-    write_schedule()
