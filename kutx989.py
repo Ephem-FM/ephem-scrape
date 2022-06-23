@@ -183,4 +183,4 @@ def get_spotify_data(song):
         print(f"IndexError: {e}")
 
 if __name__=="__main__":
-    # main()
+    main()
