@@ -22,11 +22,15 @@ def connect(func, **kwargs):
 
 	return wrapper
 
-def write_song(song, cur):
-	print('INSIDE WRITE SONG')
+def write_song(song):
+	conn = psycopg2.connect(os.environ.get('HEROKU_POSTGRESQL_ORANGE_URL'))
+	conn.autocommit = True
+	cur = conn.cursor()
 	insert_query = """ INSERT INTO playlists (playlist_song_id, station, show, date, artist, track) VALUES (%s, %s, %s, %s, %s, %s); """
 	insert_tuple = (uuid.uuid4().hex), str(song["station"]), str(song["show"]), song["date"], str(song["artist"]), str(song["track"])
-	cur.execute(insert_query, insert_tuple)
+	print(cur.execute(insert_query, insert_tuple))
+	conn.commit()
+	cur.close()
 
 def write_schedule(station, schedule, cur):
 	def adjust_time(time):
