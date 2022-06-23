@@ -38,8 +38,7 @@ def main():
 						song['artist_popularity'] = song['artist_genres'] = song['danceability'] = song['energy'] = song['instrumentalness'] = song['valence'] = ''
 						song['artist'] = artist or ''
 						song['track'] = track or ''
-						# write.add_song(song)
-						write.connect(write.write_song, use='song', song=song)
+						write.connect(write.write_song, use='song', song=song)()
 						print(song)
 				except Exception as e:
 					print('This error comes from koop917.py', e)
