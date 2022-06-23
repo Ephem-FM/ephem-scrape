@@ -5,8 +5,8 @@ import time as time_import
 
 def connect(func, **kwargs):
 	def wrapper():
-		con = psycopg2.connect('postgres://qckrwbcldmcbua:d843c6fcbe8d0411c1f113f00fdc458459f530b6bbf629a7c15e25ad09bf23e7@ec2-3-226-163-72.compute-1.amazonaws.com:5432/dc3j53nnljkf17')
-		# con = psycopg2.connect(os.environ.get('POSTGRES_URI'))
+		# con = psycopg2.connect('postgres://qckrwbcldmcbua:d843c6fcbe8d0411c1f113f00fdc458459f530b6bbf629a7c15e25ad09bf23e7@ec2-3-226-163-72.compute-1.amazonaws.com:5432/dc3j53nnljkf17')
+		con = psycopg2.connect(os.environ.get('POSTGRES_URI'))
 		con.autocommit = True
 		cur = con.cursor()
 		if[kwargs['use'] == 'schedule']:
