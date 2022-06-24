@@ -23,11 +23,11 @@ from spotipy.oauth2 import SpotifyClientCredentials
 import pprint
 import spot
 
-def main(): 
-    days_shows = get_days_shows()
-    total_tracks = get_days_songs()
-    today = str(datetime.datetime.now(ZoneInfo("America/Chicago")).date())
-    
+def main():     
+    yesterday = (datetime.datetime.now(ZoneInfo("America/Chicago")).date() - datetime.timedelta(1))
+    days_shows = get_days_shows(yesterday)
+    total_tracks = get_days_songs(yesterday)
+
     for t in total_tracks:
         song = { 'station': 'kutx989'}
         details = t.split("song-data")
@@ -49,7 +49,7 @@ def main():
             for show in days_shows:
                 if(int(hour) >= int(show["start"]) and int(hour) < int(show["end"])):
                     song["show"] = show["title"]
-                    song["date"] = today
+                    song["date"] = yesterday
                     song["track"] = track
                     song["artist"] = artist
                     song["album"] = album
@@ -74,7 +74,7 @@ def get_army_time(time):
 
     return time
          
-def get_days_shows():
+def get_days_shows(day_of_choice):
     day = []
     headers = {
         'authority': 'api.composer.nprstations.org',
@@ -91,13 +91,13 @@ def get_days_shows():
         'accept-language': 'en-US,en;q=0.9',
     }
     params = (
-        ('date', str(date.today().strftime('%Y-%m-%d'))),
+        ('date', str(day_of_choice)),
         ('format', 'json'),
     )
     response = requests.get('https://kutx.org/program-schedule/', headers=headers, params=params)
     soup = bs4(response.text, 'lxml')
-    today = calendar.day_name[datetime.datetime.now(ZoneInfo("America/Chicago")).date().weekday()].lower()
-    wkday = f"kutx-{today}"
+    yesterday_name = calendar.day_name[day_of_choice.weekday()].lower()
+    wkday = f"kutx-{yesterday_name}"
     shows = soup.find("div", id=wkday).find_all("div", class_="kutx-schedule-list-item")
 
     for show in shows:
@@ -139,7 +139,7 @@ def get_schedule():
     
     return schedule
 
-def get_days_songs():
+def get_days_songs(day_of_choice):
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--disable-dev-shm-usage")
@@ -148,9 +148,7 @@ def get_days_songs():
     driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
     # driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=chrome_options)
 
-    today = str(datetime.datetime.now(ZoneInfo("America/Chicago")).date())
-    print(today)
-    url = f"https://api.composer.nprstations.org/v1/widget/50ef24ebe1c8a1369593d032/day?date={today}&format=html&hide_amazon=false&hide_itunes=false&hide_arkiv=false"
+    url = f"https://api.composer.nprstations.org/v1/widget/50ef24ebe1c8a1369593d032/day?date={str(day_of_choice)}&format=html&hide_amazon=false&hide_itunes=false&hide_arkiv=false"
     print(url)
     driver.get(url)
     total_tracks = driver.page_source.split('daily-track-data-column')[1:-1]
