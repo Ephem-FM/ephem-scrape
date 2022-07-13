@@ -5,7 +5,6 @@ import time as time_import
 
 def connect(func, **kwargs):
 	def wrapper():
-		# con = psycopg2.connect('postgres://qckrwbcldmcbua:d843c6fcbe8d0411c1f113f00fdc458459f530b6bbf629a7c15e25ad09bf23e7@ec2-3-226-163-72.compute-1.amazonaws.com:5432/dc3j53nnljkf17')
 		conn = psycopg2.connect(os.environ.get('HEROKU_POSTGRESQL_ORANGE_URL'))
 		conn.autocommit = True
 		cur = conn.cursor()
